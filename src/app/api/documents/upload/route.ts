@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
+
 import { prisma } from "@/lib/db/prisma";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -24,6 +25,39 @@ export async function POST(request: NextRequest) {
           status: 401,
         }
       );
+    }
+
+    const clerkUser = await currentUser();
+
+    if (!clerkUser) {
+      return NextResponse.json(
+        {
+          error: "User not found",
+        },
+        {
+          status: 404,
+        }
+      );
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!existingUser) {
+await prisma.user.create({
+  data: {
+    id: userId,
+    clerkId: userId,
+    name:
+      `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim(),
+    email:
+      clerkUser.emailAddresses[0]?.emailAddress,
+    image: clerkUser.imageUrl,
+  },
+});
     }
 
     const formData = await request.formData();
