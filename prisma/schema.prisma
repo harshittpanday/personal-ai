@@ -8,81 +8,50 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  passwordHash  String?
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
 
-  accounts      Account[]
-  sessions      Session[]
-  documents     Document[]
-  chats         Chat[]
+  email     String   @unique
+  name      String?
+  image     String?
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-}
+  documents Document[]
+  chats     Chat[]
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Document {
-  id          String          @id @default(cuid())
-  userId      String
-  name        String
-  mimeType    String
-  size        Int
-  path        String
+  id        String @id @default(cuid())
+  userId    String
 
-  chunks      DocumentChunk[]
+  name      String
+  mimeType  String
+  size      Int
+  path      String
 
-  createdAt   DateTime @default(now())
+  chunks    DocumentChunk[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model DocumentChunk {
-  id          String   @id @default(cuid())
-  documentId  String
-  content     String
+  id         String @id @default(cuid())
 
-embedding Json?
+  documentId String
+  content    String @db.Text
 
-  createdAt   DateTime @default(now())
+  // Temporary for MVP.
+  // Will become vector(1536) using pgvector later.
+  embedding  Json?
+
+  createdAt  DateTime @default(now())
 
   document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
 
@@ -90,24 +59,28 @@ embedding Json?
 }
 
 model Chat {
-  id         String    @id @default(cuid())
-  title      String?
-  userId     String
+  id        String @id @default(cuid())
 
-  messages   Message[]
+  userId    String
+  title     String?
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  messages  Message[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String @id @default(cuid())
+
   chatId    String
 
   role      String
-  content   String   @db.Text
+  content   String @db.Text
 
   createdAt DateTime @default(now())
 
