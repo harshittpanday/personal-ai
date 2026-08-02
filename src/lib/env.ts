@@ -8,7 +8,7 @@ const envSchema = z.object({
   NEXTAUTH_URL: z.string().url(),
   NEXTAUTH_SECRET: z.string().min(32),
 
-  OPENAI_API_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().min(1),
 
   UPLOAD_DIR: z.string().min(1),
 });
