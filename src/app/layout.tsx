@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s | Personal AI",
   },
   description:
-    "A personal AI knowledge assistant powered by Gemini, RAG, and PostgreSQL.",
+    "A personal AI knowledge assistant powered by Gemini and RAG.",
 };
 
 export default function RootLayout({
@@ -30,17 +30,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html
-        lang="en"
-        className={`${geistSans.variable} ${geistMono.variable}`}
-        suppressHydrationWarning
-      >
-        <body className="min-h-screen bg-background font-sans antialiased">
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen bg-background font-sans antialiased">
+        <ClerkProvider>
           {children}
           <Toaster richColors position="top-right" />
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
