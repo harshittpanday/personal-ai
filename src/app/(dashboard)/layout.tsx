@@ -11,13 +11,15 @@ export default function DashboardLayout({
       <Sidebar />
 
       <div className="md:pl-64">
-        <header className="flex h-16 items-center border-b px-6 md:hidden">
+        <header className="sticky top-0 z-40 flex h-16 items-center border-b bg-background/80 px-4 backdrop-blur md:hidden">
           <MobileNav />
         </header>
 
-        <main className="p-6">
-          {children}
-        </main>
+<main className="px-4 py-8 sm:px-6 lg:px-8">
+  <div className="mx-auto max-w-7xl">
+    {children}
+  </div>
+</main>
       </div>
     </div>
   );
