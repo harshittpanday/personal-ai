@@ -12,6 +12,7 @@
     "@auth/core": "^0.34.3",
     "@base-ui/react": "^1.6.0",
     "@clerk/nextjs": "^7.6.4",
+    "@google/genai": "^2.15.0",
     "@langchain/core": "^1.2.4",
     "@langchain/openai": "^1.5.5",
     "@prisma/client": "^6.19.3",
